@@ -31,6 +31,50 @@ namespace Papyrus {
 		return SpoofEvent(static_cast<VMTypeID>(self->FORMTYPE), &eventName, self, RE::MakeFunctionArguments(std::move(akActivator)));
 	}
 
+	bool SpoofOnAttachedToCell(VM* vm, StackID id, StaticFunctionTag*, TESObjectREFR* self)
+	{
+		if (self == nullptr) {
+			vm->TraceStack("Error: source cannot be null", id, kError);
+			return false;
+		}
+
+		BSFixedString eventName = "OnAttachedToCell";
+		return SpoofEvent(static_cast<VMTypeID>(self->FORMTYPE), &eventName, self, RE::MakeFunctionArguments());
+	}
+
+	bool SpoofOnCellAttach(VM* vm, StackID id, StaticFunctionTag*, TESObjectREFR* self)
+	{
+		if (self == nullptr) {
+			vm->TraceStack("Error: source cannot be null", id, kError);
+			return false;
+		}
+
+		BSFixedString eventName = "OnCellAttach";
+		return SpoofEvent(static_cast<VMTypeID>(self->FORMTYPE), &eventName, self, RE::MakeFunctionArguments());
+	}
+
+	bool SpoofOnCellDetach(VM* vm, StackID id, StaticFunctionTag*, TESObjectREFR* self)
+	{
+		if (self == nullptr) {
+			vm->TraceStack("Error: source cannot be null", id, kError);
+			return false;
+		}
+
+		BSFixedString eventName = "OnCellDetach";
+		return SpoofEvent(static_cast<VMTypeID>(self->FORMTYPE), &eventName, self, RE::MakeFunctionArguments());
+	}
+
+	bool SpoofOnCellLoad(VM* vm, StackID id, StaticFunctionTag*, TESObjectREFR* self)
+	{
+		if (self == nullptr) {
+			vm->TraceStack("Error: source cannot be null", id, kError);
+			return false;
+		}
+
+		BSFixedString eventName = "OnCellLoad";
+		return SpoofEvent(static_cast<VMTypeID>(self->FORMTYPE), &eventName, self, RE::MakeFunctionArguments());
+	}
+
 	bool SpoofOnVampireFeed(VM* vm, StackID id, StaticFunctionTag*, Actor* self, Actor* akTarget)
 	{
 		if (self == nullptr) {
@@ -56,6 +100,19 @@ namespace Papyrus {
 
 		a_vm->RegisterFunction("SpoofOnActivate"sv, PapyrusClass, SpoofOnActivate, true);
 		logger::info("Registered SpoofOnActivate");
+
+		a_vm->RegisterFunction("SpoofOnAttachedToCell"sv, PapyrusClass, SpoofOnAttachedToCell, true);
+		logger::info("Registered SpoofOnAttachedToCell");
+
+		a_vm->RegisterFunction("SpoofOnCellAttach"sv, PapyrusClass, SpoofOnCellAttach, true);
+		logger::info("Registered SpoofOnCellAttach");
+
+		a_vm->RegisterFunction("SpoofOnCellDetach"sv, PapyrusClass, SpoofOnCellDetach, true);
+		logger::info("Registered SpoofOnCellDetach");
+
+		a_vm->RegisterFunction("SpoofOnCellLoad"sv, PapyrusClass, SpoofOnCellLoad, true);
+		logger::info("Registered SpoofOnCellLoad");
+
 		a_vm->RegisterFunction("SpoofOnVampireFeed"sv, PapyrusClass, SpoofOnVampireFeed, true);
 		logger::info("Registered SpoofOnVampireFeed");
 

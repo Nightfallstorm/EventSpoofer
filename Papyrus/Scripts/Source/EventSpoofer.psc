@@ -10,4 +10,12 @@ Scriptname EventSpoofer
 
 Function SpoofOnActivate(ObjectReference source, ObjectReference akActivator) global native
 
+Function SpoofOnAttachedToCell(ObjectReference source) global native
+
+Function SpoofOnCellAttach(ObjectReference source) global native
+
+Function SpoofOnCellDetach(ObjectReference source) global native
+
+Function SpoofOnCellLoad(ObjectReference source) global native
+
 Function SpoofOnVampireFeed(Actor source, Actor akTarget) global native
