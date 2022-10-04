@@ -4,6 +4,47 @@ using namespace RE;
 
 namespace Papyrus {
     const std::string PapyrusClass = "EventSpoofer";
+	const auto kError = RE::BSScript::Internal::VirtualMachine::Severity::kError;
+	
+	bool SpoofEvent(RE::VMTypeID type, BSFixedString* eventName, const void* self, RE::BSScript::IFunctionArguments* args...)
+	{
+		auto handle = SkyrimVM::GetSingleton()->handlePolicy.GetHandleForObject(type, self);
+		if (handle != 0) {
+			SkyrimVM::GetSingleton()->SendAndRelayEvent(handle, eventName, args, nullptr);
+			return true;
+		}
+		return false;
+	}
+
+	bool SpoofOnActivate(VM* vm, StackID id, StaticFunctionTag*, TESObjectREFR* self, TESObjectREFR* akActivator)
+	{
+		if (self == nullptr) {
+			vm->TraceStack("Error: source cannot be null", id, kError);
+			return false;
+		}
+		if (akActivator == nullptr) {
+			vm->TraceStack("Error: akActivator cannot be null", id, kError);
+			return false;
+		}
+
+		BSFixedString eventName = "OnActivate";
+		return SpoofEvent(static_cast<VMTypeID>(self->FORMTYPE), &eventName, self, RE::MakeFunctionArguments(std::move(akActivator)));
+	}
+
+	bool SpoofOnVampireFeed(VM* vm, StackID id, StaticFunctionTag*, Actor* self, Actor* akTarget)
+	{
+		if (self == nullptr) {
+			vm->TraceStack("Error: source cannot be null", id, kError);
+			return false;
+		}
+		if (akTarget == nullptr) {
+			vm->TraceStack("Error: akTarget cannot be null", id, kError);
+			return false;
+		}
+
+		BSFixedString eventName = "OnVampireFeed";
+		return SpoofEvent(static_cast<VMTypeID>(self->FORMTYPE), &eventName, self, RE::MakeFunctionArguments(std::move(akTarget)));
+	}
 
     bool Bind(VM* a_vm) {
         if (!a_vm) {
@@ -12,6 +53,11 @@ namespace Papyrus {
         }
 
         logger::info("{:*^30}", "FUNCTIONS"sv);
+
+		a_vm->RegisterFunction("SpoofOnActivate"sv, PapyrusClass, SpoofOnActivate, true);
+		logger::info("Registered SpoofOnActivate");
+		a_vm->RegisterFunction("SpoofOnVampireFeed"sv, PapyrusClass, SpoofOnVampireFeed, true);
+		logger::info("Registered SpoofOnVampireFeed");
 
         return true;
     }
